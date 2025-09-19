@@ -1,0 +1,15 @@
+# .husky/pre-commit
+
+# Отримуємо staged файли (додані/змінені) і фільтруємо тільки ті, що з кодом
+FILES=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '\.(js|jsx|ts|tsx)$')
+
+if [ -n "$FILES" ]; then
+  echo "🔹 Running Prettier..."
+  npx prettier --write $FILES --ignore-unknown
+
+  echo "🔹 Running ESLint..."
+  npx eslint --fix $FILES
+fi
+
+# Оновлюємо індекс після автофіксів
+git update-index --again
